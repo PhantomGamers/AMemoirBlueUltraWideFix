@@ -7,8 +7,10 @@
 ## Screenshots
 
 Before:
+![A_Memoir_Blue_TDdKXaUU14](https://user-images.githubusercontent.com/844685/160024252-6a456a3f-43fd-4e75-a8a1-90a2962c1345.jpg)
 
 After:
+![A_Memoir_Blue_FarnKqt9zV](https://user-images.githubusercontent.com/844685/160024256-cf6f23f2-38ad-4193-8652-c060d775d51e.jpg)
 
 ## Instructions
 
