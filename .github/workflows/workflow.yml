@@ -1,0 +1,66 @@
+name: releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: Version number
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BundleBepInEx : true
+      BepInExVersion : 5
+      PluginName : AMemoirBlueUltraWideFix
+      GithubRelease : true
+    steps:
+    - name: Check Tag
+      id: check-tag
+      uses: actions-ecosystem/action-regex-match@v2
+      with:
+        text: ${{ github.event.inputs.version }}
+        regex: '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+
+    - name: Fail if invalid
+      if: steps.check-tag.outputs.match == ''
+      uses: Actions/github-script@v3
+      with:
+        script: |
+          core.setFailed('Invalid tag')
+
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+
+    # BepInEx 6
+    - run: |
+        $bepinexurl = (curl -vs https://builds.bepinex.dev/projects/bepinex_be 2>&1 | grep -Po '(?<=href=")(\/projects\/bepinex_be\/(.*)\/BepInEx_UnityIL2CPP_x86(.*))(?=")' | head -1)"
+        wget $bepinexurl > bepinex.zip
+      if: ${{env.BundleBepInEx && env.BepInExVersion == 6}}
+
+    # BepInEx 5
+    - run: wget https://github.com/BepInEx/BepInEx/releases/download/v5.4.19/BepInEx_x64_5.4.19.0.zip
+      if: ${{env.BundleBepInEx && env.BepInExVersion == 5}}
+
+    - run: | 
+        mkdir out;
+        unzip BepInEx* -d out;
+        dotnet build -c Release -o out/BepInEx/plugins/${{env.PluginName}};
+      if: ${{env.BundleBepInEx}}
+
+    - run: |
+        dotnet build -c Release -o out/${{env.PluginName}}
+      if: ${{!env.BundleBepInEx}}
+
+    - run: zip -r ${{env.PluginName}}.zip out
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "${{env.PluginName}}.zip"
+        tag: ${{ github.event.inputs.version }}
+        commit: ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifactErrorsFailBuild: true
+        draft: true
+      if: ${{env.GithubRelease}}
