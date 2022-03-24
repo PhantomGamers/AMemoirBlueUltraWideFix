@@ -16,7 +16,7 @@ After:
 
 1. Download the latest release from <https://github.com/PhantomGamers/AMemoirBlueUltraWideFix/releases/latest>
 
-2. Extract the contents of WeNeedToGoDeeper_ResolutionFix.zip to your game installation folder (e.g. `C:\Program Files (x86)\Steam\steamapps\common\A Memoir Blue`)
+2. Extract the contents of AMemoirBlueUltraWideFix.zip to your game installation folder (e.g. `C:\Program Files (x86)\Steam\steamapps\common\A Memoir Blue`)
 
 3. Launch the game
 
