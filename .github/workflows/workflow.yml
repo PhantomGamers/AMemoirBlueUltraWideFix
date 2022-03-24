@@ -34,27 +34,29 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1
 
-    # BepInEx 6
-    - run: |
+    - name: BepInEx 6
+      run: |
         $bepinexurl = (curl -vs https://builds.bepinex.dev/projects/bepinex_be 2>&1 | grep -Po '(?<=href=")(\/projects\/bepinex_be\/(.*)\/BepInEx_UnityIL2CPP_x86(.*))(?=")' | head -1)"
         wget $bepinexurl > bepinex.zip
       if: ${{env.BundleBepInEx && env.BepInExVersion == 6}}
 
-    # BepInEx 5
-    - run: wget https://github.com/BepInEx/BepInEx/releases/download/v5.4.19/BepInEx_x64_5.4.19.0.zip
+    - name: BepInEx 5
+      run: wget https://github.com/BepInEx/BepInEx/releases/download/v5.4.19/BepInEx_x64_5.4.19.0.zip
       if: ${{env.BundleBepInEx && env.BepInExVersion == 5}}
 
-    - run: | 
+    - name: Bundle with BepInEx
+      run: | 
         mkdir out;
         unzip BepInEx* -d out;
         dotnet build -c Release -o out/BepInEx/plugins/${{env.PluginName}};
       if: ${{env.BundleBepInEx}}
 
-    - run: |
+    - name: Package without BepInEx
+      run: |
         dotnet build -c Release -o out/${{env.PluginName}}
       if: ${{!env.BundleBepInEx}}
 
-    - run: zip -r ${{env.PluginName}}.zip out
+    - run: zip -r ${{env.PluginName}}.zip out/
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "${{env.PluginName}}.zip"
