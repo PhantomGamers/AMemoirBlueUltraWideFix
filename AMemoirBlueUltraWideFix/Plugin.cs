@@ -45,7 +45,12 @@ namespace AMemoirBlueUltraWideFix
         [HarmonyPatch(typeof(FixRatio), nameof(FixRatio.RescaleCamera))]
         public static bool OverrideRescaleCamera(FixRatio __instance)
         {
-            return __instance.gameObject.name != "Main Camera";
+            if(__instance.gameObject.tag == "UICamera")
+            {
+                __instance.gameObject.GetComponent<Camera>().aspect = 16f / 9f;
+            }
+
+            return __instance.gameObject.name != "Main Camera" && __instance.gameObject.tag != "UICamera";
         }
 
         [HarmonyPrefix]
