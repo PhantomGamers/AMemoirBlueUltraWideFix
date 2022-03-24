@@ -57,7 +57,7 @@ jobs:
       if: ${{!env.BundleBepInEx}}
 
     - name: Zip build
-      run: zip -r ${{env.PluginName}}.zip out/*
+      run: cd out && zip -r ../${{env.PluginName}}.zip * && cd ..
 
     - name: Publish to Github
       uses: ncipollo/release-action@v1
