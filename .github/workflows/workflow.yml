@@ -48,12 +48,12 @@ jobs:
       run: | 
         mkdir out;
         unzip BepInEx* -d out;
-        dotnet build -c Release -o out/BepInEx/plugins/${{env.PluginName}};
+        dotnet build -c Release /p:Version=${{ github.event.inputs.version }} -o out/BepInEx/plugins/${{env.PluginName}};
       if: ${{env.BundleBepInEx}}
 
     - name: Package without BepInEx
       run: |
-        dotnet build -c Release -o out/${{env.PluginName}}
+        dotnet build -c Release /p:Version=${{ github.event.inputs.version }} -o out/${{env.PluginName}}
       if: ${{!env.BundleBepInEx}}
 
     - name: Zip build
