@@ -1,8 +1,8 @@
 # AMemoirBlueUltraWideFix
 
-    - Allows selecting native resolution in game settings
-    - Removes letterboxing in cutscenes
-    - Removes pillarboxing at aspect ratios wider than 16:9
+- Allows selecting native resolution in game settings
+- Removes letterboxing in cutscenes
+- Removes pillarboxing at aspect ratios wider than 16:9
 
 ## Screenshots
 
@@ -20,6 +20,17 @@ After:
 
 3. Launch the game
 
+## Changelog
+
+### 1.1.0
+
+- Fixed interaction area without stretching UI (thanks to @Lyall)
+
+### 1.0.0
+
+- Initial Release
+
 ## Credits
 
 - Uses [BepInEx 5 Mono x64 Builds](https://github.com/BepInEx/BepInEx)
+- Thanks to @Lyall for finding a better solution to the interaction area issue that doesn't stretch the UI.

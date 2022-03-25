@@ -24,7 +24,7 @@ namespace AMemoirBlueUltraWideFix
         private RESOLUTION[] GetResolutions()
         {
             var list = AMB_Service.resolutions.ToList();
-            Logger.LogInfo($"{Display.main.systemWidth} {Display.main.systemHeight} {Screen.resolutions[Screen.resolutions.Length - 1].refreshRate}");
+            Logger.LogInfo($"Adding {Display.main.systemWidth} {Display.main.systemHeight} {Screen.resolutions[Screen.resolutions.Length - 1].refreshRate} to resolutions");
             list.Add(new(Display.main.systemWidth, Display.main.systemHeight, Screen.resolutions[Screen.resolutions.Length - 1].refreshRate));
             return list.ToArray();
         }
@@ -43,14 +43,9 @@ namespace AMemoirBlueUltraWideFix
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FixRatio), nameof(FixRatio.RescaleCamera))]
-        public static bool OverrideRescaleCamera(FixRatio __instance)
+        public static bool OverrideRescaleCamera()
         {
-            if(__instance.gameObject.tag == "UICamera")
-            {
-                __instance.gameObject.GetComponent<Camera>().aspect = 16f / 9f;
-            }
-
-            return __instance.gameObject.name != "Main Camera" && __instance.gameObject.tag != "UICamera";
+            return false;
         }
 
         [HarmonyPrefix]
@@ -60,6 +55,19 @@ namespace AMemoirBlueUltraWideFix
         {
             __instance.RemoveLetterBox(0f);
             return false;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Screen), nameof(Screen.SetResolution), typeof(int), typeof(int), typeof(FullScreenMode), typeof(int))]
+        [HarmonyPatch(typeof(TFBGames.InputManager), nameof(TFBGames.InputManager.OnEnable))]
+        public static void OverrideCanvasConstraint()
+        {
+            if(TFBGames.InputManager.Instance != null)
+            {
+                var AR = (float)Screen.width / Screen.height;
+                var ARMulti = AR / (16f/9f);
+                TFBGames.InputManager.Instance.CanvasConstraints = new(ARMulti * 1920f, 1080f);
+            }
         }
     }
 }
